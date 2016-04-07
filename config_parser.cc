@@ -148,6 +148,9 @@ NginxConfigParser::TokenType NginxConfigParser::ParseToken(std::istream* input,
 }
 
 bool NginxConfigParser::Parse(std::istream* config_file, NginxConfig* config) {
+  // Keep track of the opening/closing curly brace difference
+  int cb_diff = 0;
+  
   std::stack<NginxConfig*> config_stack;
   config_stack.push(config);
   TokenType last_token_type = TOKEN_TYPE_START;
@@ -190,6 +193,7 @@ bool NginxConfigParser::Parse(std::istream* config_file, NginxConfig* config) {
         break;
       }
     } else if (token_type == TOKEN_TYPE_START_BLOCK) {
+	  cb_diff++;
       if (last_token_type != TOKEN_TYPE_NORMAL) {
         // Error.
         break;
@@ -199,7 +203,11 @@ bool NginxConfigParser::Parse(std::istream* config_file, NginxConfig* config) {
           new_config);
       config_stack.push(new_config);
     } else if (token_type == TOKEN_TYPE_END_BLOCK) {
-      if (last_token_type != TOKEN_TYPE_STATEMENT_END) {
+      cb_diff--;
+      // Modification made here...we shouldn't necessarily have an error 
+      // if we have two consecutive TOKEN_TYPE_END_BLOCK's.
+      if (last_token_type == TOKEN_TYPE_END_BLOCK && cb_diff >= 0) ;
+      else if (last_token_type != TOKEN_TYPE_STATEMENT_END) {
         // Error.
         break;
       }
