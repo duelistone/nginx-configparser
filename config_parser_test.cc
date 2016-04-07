@@ -98,6 +98,10 @@ TEST_F(NginxStringConfigTest, UnmatchedQuoteTest) {
 	EXPECT_FALSE(ParseString("\" a;"));
 }
 
+TEST_F(NginxStringConfigTest, ThreeQuoteTest) {
+	EXPECT_FALSE(ParseString("\"\"\" a;"));
+}
+
 TEST_F(NginxStringConfigTest, EmptyString) {
 	EXPECT_TRUE(ParseString("\"\" a;"));
 }
@@ -108,4 +112,12 @@ TEST_F(NginxStringConfigTest, CommentTest) {
 
 TEST_F(NginxStringConfigTest, HashtagMeaning) {
 	EXPECT_FALSE(ParseString("a #;"));
+}
+
+TEST_F(NginxStringConfigTest, BodyWithoutName) {
+	EXPECT_FALSE(ParseString(" { a b; } "));
+}
+
+TEST_F(NginxStringConfigTest, NoNewLine) {
+	EXPECT_TRUE(ParseString("a b; c d; e {f g;} h k {l m;}"));
 }
