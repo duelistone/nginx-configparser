@@ -121,3 +121,8 @@ TEST_F(NginxStringConfigTest, BodyWithoutName) {
 TEST_F(NginxStringConfigTest, NoNewLine) {
 	EXPECT_TRUE(ParseString("a b; c d; e {f g;} h k {l m;}"));
 }
+
+TEST_F(NginxStringConfigTest, Wade1) {
+	EXPECT_FALSE(ParseString("hello;}"));
+}
+

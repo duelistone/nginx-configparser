@@ -207,7 +207,7 @@ bool NginxConfigParser::Parse(std::istream* config_file, NginxConfig* config) {
       // Modification made here...we shouldn't necessarily have an error 
       // if we have two consecutive TOKEN_TYPE_END_BLOCK's.
       if (last_token_type == TOKEN_TYPE_END_BLOCK && cb_diff >= 0) ;
-      else if (last_token_type != TOKEN_TYPE_STATEMENT_END) {
+      else if (cb_diff < 0 || last_token_type != TOKEN_TYPE_STATEMENT_END) {
         // Error.
         break;
       }
